@@ -7,14 +7,14 @@ Vector3::Vector3(const Vector3& v) : x(v.x), y(v.y), z(v.z) {}
 
 Vector3& Vector3::operator = (const float val){
     x = val;
-    z = val;
     y = val;
+    z = val;
 }
 
 Vector3& Vector3::operator = (const Vector3& other){
     x = other.x;
-    z = other.y;
-    y = other.z;
+    y = other.y;
+    z = other.z;
 }
 
 Vector3& Vector3::operator += (const Vector3& other){
@@ -61,9 +61,10 @@ Vector3& Vector3::operator *= (const float val){
     return *this;
 }
 Vector3& Vector3::operator /= (const float val){
-    x /= val;
-    y /= val;
-    z /= val;
+    float val_inv = 1.0/val;
+    x *= val;
+    y *= val;
+    z *= val;
     return *this;
 }
 
@@ -92,8 +93,8 @@ float Vector3::getLength(){
 }
 
 void Vector3::setLength(float length){
-    float L = getLength();
-    x = x/L*length;
-    y = y/L*length;
-    z = z/L*length;
+    float L = 1.0/getLength();
+    x = x*L*length;
+    y = y*L*length;
+    z = z*L*length;
 }

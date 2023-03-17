@@ -21,19 +21,19 @@ void Leg::update(){
 
 Leg::IKState Leg::ik(const Vector3& Q, float phi, float angles_out[4]){
 
-    float L0 = joints[0].length;
-    float L1 = joints[1].length;
-    float L2 = joints[2].length;
-    float L3 = joints[3].length;
+    const float L0 = joints[0].length;
+    const float L1 = joints[1].length;
+    const float L2 = joints[2].length;
+    const float L3 = joints[3].length;
 
     // compute point for 2-dof problem
-    float xy = sqrt(Q.x * Q.x + Q.y * Q.y) - L0 - L3 * sin(phi);
-    float z = Q.z + L3 * cos(phi);
+    const float xy = sqrt(Q.x * Q.x + Q.y * Q.y) - L0 - L3 * sin(phi);
+    const float z = Q.z + L3 * cos(phi);
     // Serial.println(String("xy: ") + String(xy, 6));
     // Serial.println(String("z: ") + String(z, 6));
 
     // solve 2-dof problem
-    float v = (xy * xy + z * z - L1 * L1 - L2 * L2) / (2.0f * L1 * L2);
+    const float v = (xy * xy + z * z - L1 * L1 - L2 * L2) / (2.0f * L1 * L2);
     // Serial.println(String("xy * xy + z * z - L1 * L1 - L2 * L2: ") + String(xy * xy + z * z - L1 * L1 - L2 * L2, 6));
     // Serial.println(String("2.0f * L1 * L2: ") + String(2.0f * L1 * L2, 6));
     // Serial.println(String("v: ") + String(v, 6));

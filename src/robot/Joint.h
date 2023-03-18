@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __JOINT__
+#define __JOINT__
 
 #include <Arduino.h>
 
@@ -14,3 +15,5 @@ public:
     Joint();
 
 };
+
+#endif

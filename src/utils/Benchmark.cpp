@@ -1,7 +1,7 @@
 #include "Benchmark.h"
-#include "Arduino.h"
-#include "Vector3.h"
+#include <Arduino.h>
 #include <cmath>
+#include "math/Vector3.h"
 
 namespace Benchmark {
 

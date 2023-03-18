@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __VECTOR_3__
+#define __VECTOR_3__
 
 class Vector3 {
 public:
@@ -61,3 +62,5 @@ public:
 
 
 };
+
+#endif

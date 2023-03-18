@@ -9,12 +9,14 @@ Vector3& Vector3::operator = (const float val){
     x = val;
     y = val;
     z = val;
+    return *this;
 }
 
 Vector3& Vector3::operator = (const Vector3& other){
     x = other.x;
     y = other.y;
     z = other.z;
+    return *this;
 }
 
 Vector3& Vector3::operator += (const Vector3& other){
@@ -62,9 +64,9 @@ Vector3& Vector3::operator *= (const float val){
 }
 Vector3& Vector3::operator /= (const float val){
     float val_inv = 1.0/val;
-    x *= val;
-    y *= val;
-    z *= val;
+    x *= val_inv;
+    y *= val_inv;
+    z *= val_inv;
     return *this;
 }
 

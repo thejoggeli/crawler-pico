@@ -1,9 +1,10 @@
-#pragma once
+#ifndef __LEG__
+#define __LEG__
 
 #include <Arduino.h>
-#include "Vector3.h"
+#include "math/Vector3.h"
 #include "Joint.h"
-#define NUM_JOINTS 4
+#include "CrawlerConfig.h"
 
 class Leg {
 public:
@@ -31,3 +32,5 @@ public:
     Leg::IKState ik(const Vector3& Q, float phi, float angles_out[4]);
 
 };
+
+#endif

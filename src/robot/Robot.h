@@ -1,9 +1,10 @@
-#pragma once
+#ifndef __ROBOT__
+#define __ROBOT__
 
 #include <Arduino.h>
 #include <cmath>
 #include "Leg.h"
-#define NUM_LEGS 4
+#include "CrawlerConfig.h"
 
 class Robot {
 public:
@@ -16,3 +17,5 @@ public:
     void update();
 
 };
+
+#endif

@@ -1,9 +1,23 @@
 #include "Vector3.h"
 #include <cmath>
+#include <Arduino.h>
 
 Vector3::Vector3() : x(0.0), y(0.0), z(0.0) {}
 Vector3::Vector3(float x, float y, float z) : x(x), y(y), z(z) {}
 Vector3::Vector3(const Vector3& v) : x(v.x), y(v.y), z(v.z) {}
+
+void Vector3::print(){
+    Serial.println(toString());
+}
+
+String Vector3::toString(){
+    String s = "(";
+    s += "x: " + String(x) + ", ";
+    s += "y: " + String(y) + ", ";
+    s += "z: " + String(z);
+    s += ")";
+    return s;
+}
 
 Vector3& Vector3::operator = (const float val){
     x = val;

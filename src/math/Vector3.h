@@ -1,6 +1,8 @@
 #ifndef __VECTOR_3__
 #define __VECTOR_3__
 
+#include <Arduino.h>
+
 class Vector3 {
 public:
 
@@ -11,6 +13,9 @@ public:
     Vector3();
     Vector3(float x, float y, float z);
     Vector3(const Vector3& v);
+
+    void print();
+    String toString();
     
     Vector3& operator = (const float val);
     Vector3& operator = (const Vector3& other);

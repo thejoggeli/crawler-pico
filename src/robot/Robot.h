@@ -14,6 +14,7 @@ public:
     Robot();
 
     void init();
+    void start();
     void update();
 
 };

@@ -1,88 +1,25 @@
 #include <Arduino.h>
 #include "robot/Robot.h"
 #include "utils/Benchmark.h"
-#include "gait/IKGait.h"
+#include "control/GaitControl.h"
+#include "control/JoystickControl.h"
 
 Robot robot;
-IKGait gait(128);
 
-float gaitTime = 0.0f;
-
-void doGait(){
-
-    Serial.println(String("IKGaitFrame at gaitTime=") + String(gaitTime, 3));
-
-    // Benchmark::tick();
-    IKGaitFrame frame;
-    gait.getFrameRelativeInterp(gaitTime, frame);
-    // Benchmark::tock("getFrameRelativeInterp duration: ");
-    
-    frame.print();
-
-    // Benchmark::tick();
-    float angles_out[NUM_JOINTS];
-    for(int i = 0; i < NUM_LEGS; i++){
-        robot.legs[i].ik(frame.Q[i], frame.phi[i], angles_out);
-    }
-    // Benchmark::tock("legs.ik() duration: ");
-
-    gaitTime += 0.09f;
-    while(gaitTime > 1.0f){
-        gaitTime -= 1.0f;
-    }
-
-}
+GaitControl gaitControl(&robot);
+JoystickControl joystickControl(&robot);
 
 void setup() {
 
     Serial.begin(115200);
 
     robot.init();
-
-    float gait_timestep = 1.0f / (float)(gait.numFrames);
-    for(int i = 0; i < gait.numFrames; i++){
-
-        float t = (float)(i) * gait_timestep;
-        float t2pi = t * PI * 2.0f;
-        float tsin = sin(t2pi);
-
-        IKGaitFrame& frame = gait.frames[i];
-
-        frame.Q[0].x = +0.265 * (1.0/1.414);
-        frame.Q[1].x = -0.265 * (1.0/1.414);
-        frame.Q[2].x = -0.265 * (1.0/1.414);
-        frame.Q[3].x = +0.265 * (1.0/1.414);
-
-        frame.Q[0].y = +0.265 * (1.0/1.414);
-        frame.Q[1].y = +0.265 * (1.0/1.414);
-        frame.Q[2].y = -0.265 * (1.0/1.414);
-        frame.Q[3].y = -0.265 * (1.0/1.414);
-
-        frame.Q[0].z = -0.033;
-        frame.Q[1].z = -0.033;
-        frame.Q[2].z = -0.033;
-        frame.Q[3].z = -0.033;
-
-        frame.phi[0] = 45.0f / 180.0f * PI;
-        frame.phi[1] = 45.0f / 180.0f * PI;
-        frame.phi[2] = 45.0f / 180.0f * PI;
-        frame.phi[3] = 45.0f / 180.0f * PI;
-
-        float dz = (tsin*0.5+0.5f) * (-0.05);
-
-        frame.Q[0].z += dz;
-        frame.Q[1].z += dz;
-        frame.Q[2].z += dz;
-        frame.Q[3].z += dz;
-        
-        float dphi = (tsin*0.5+0.5f) * (-15.0f) * (1.0f/180.0f) * PI;
-
-        frame.phi[0] += dphi;
-        frame.phi[1] += dphi;
-        frame.phi[2] += dphi;
-        frame.phi[3] += dphi; 
-
-    }
+    gaitControl.init();
+    joystickControl.init();
+    
+    robot.start();
+    gaitControl.start();
+    joystickControl.start();
 
 }
 
@@ -128,7 +65,24 @@ void loop() {
 
     }
 
-    doGait();
-    delay(1000);
+    // gaitControl.update();
+    // delay(1000);
 
+    const unsigned int fps = 100;
+    const unsigned long frame_duration_us = (unsigned long)((1.0/(double)fps)*1.0e6);
+    unsigned long t_start_us = micros();
+
+    // Benchmark::tick();
+    joystickControl.update();
+    // Benchmark::tock("joystickControl.update() duration: ");
+
+    float used = ((double)(micros() - t_start_us) * 1.0e-6) / (double)(frame_duration_us * 1.0e-6) * 100.0;
+    Serial.println("frame capacity used (%): " + String(used, 3));
+
+    unsigned long t_duration_us = micros() - t_start_us;
+    unsigned long t_delay_us = frame_duration_us - t_duration_us;
+    if(t_delay_us > 0){
+        delayMicroseconds(t_delay_us);
+    }
+    
 }

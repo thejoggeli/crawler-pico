@@ -7,6 +7,7 @@ class Joint {
 public:
 
     float angle;
+    float angleOffset;
     float length;
 
     float minAngle = -PI*0.5f;

@@ -1,13 +1,10 @@
 #include "Leg.h"
 #include <cmath>
+#include "utils/StringUtils.h"
 
 using namespace std;
 
 Leg::Leg() {
-
-}
-
-Leg::Leg(const Vector3& anchor, bool flipAnchor) : anchor(anchor), flipAnchor(flipAnchor){
 
 }
 
@@ -19,7 +16,10 @@ void Leg::update(){
     
 }
 
-Leg::IKState Leg::ik(const Vector3& Q, float phi, float angles_out[4]){
+Leg::IKState Leg::ik(const Vector3& Q_in, float phi, float angles_out[4]){
+
+    Vector3 Q = Q_in;
+
 
     const float L0 = joints[0].length;
     const float L1 = joints[1].length;
@@ -50,10 +50,10 @@ Leg::IKState Leg::ik(const Vector3& Q, float phi, float angles_out[4]){
     float a0 = atan2(Q.y, Q.x);
 
     // write angles to output array
-    angles_out[0] = a0;
-    angles_out[1] = a1;
-    angles_out[2] = a2;
-    angles_out[3] = a3;
+    angles_out[0] = a0 - joints[0].angleOffset;
+    angles_out[1] = a1 - joints[1].angleOffset;
+    angles_out[2] = a2 - joints[2].angleOffset;
+    angles_out[3] = a3 - joints[3].angleOffset;
     
     // check angles
     if(!checkAngles(angles_out)){
@@ -73,14 +73,21 @@ bool Leg::checkAngles(float angles[NUM_JOINTS]){
     return true;
 }
 
-void Leg::printCurrentAngles(float angles[NUM_JOINTS]){
+void Leg::printCurrentAngles(){
+    String s = "[Angles]";
     for(int i = 0; i < NUM_JOINTS; i++){
-        Serial.println(String("a") + String(i) + String(": ") + String(joints[i].angle/PI*180.0f, 6));
+        s += " a" + String(i) + ": " + StringUtils::padLeft(String(joints[i].angle/PI*180.0f, 3), ' ', 8);
     }
+    Serial.println(s);
 }
 
 void Leg::printAngles(float angles[NUM_JOINTS]){
+    String s = "[Angles]";
     for(int i = 0; i < NUM_JOINTS; i++){
-        Serial.println(String("a") + String(i) + String(": ") + String(angles[i]/PI*180.0f, 6));
+        s += " a" + String(i) + ": " + StringUtils::padLeft(String(angles[i]/PI*180.0f, 3), ' ', 8);
+        if(i < NUM_JOINTS-1){
+            s += " |";
+        }
     }
+    Serial.println(s);
 }
